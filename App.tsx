@@ -3,6 +3,7 @@ import {useFonts} from "expo-font";
 import {ActivityIndicator} from 'react-native';
 import * as SplashScreen from 'expo-splash-screen';
 import RegistrationScreen from "./screens/RegistrationScreen";
+import LoginScreen from "./screens/LoginScreen";
 
 
 SplashScreen.preventAutoHideAsync();
@@ -22,7 +23,8 @@ export default function App() {
     return <ActivityIndicator />
   }
   return (
-    <RegistrationScreen/>
+    // <RegistrationScreen/>
+    <LoginScreen />
   );
 }
 

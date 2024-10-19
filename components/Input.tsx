@@ -2,20 +2,41 @@ import {StyleProp, StyleSheet, TextInput, View, ViewStyle} from "react-native";
 import {colors} from "../styles/global";
 import {FC} from "react";
 
-interface InputProps {
+type InputProps<T extends string> = {
+    value: string;
     placeholder?: string;
     externalStyles?: StyleProp<ViewStyle>;
     showBtn?: React.ReactNode;
-}
+    inputType: T;
+    secureTextEntry?: boolean;
+    onTextChange: (value: string, input: T) => void;
+};
 
 
-const Input: FC<InputProps> = ({placeholder, externalStyles, showBtn}) => {
+const Input = <T extends string>(
+    {
+        value,
+        onTextChange,
+        placeholder,
+        externalStyles,
+        showBtn,
+        inputType,
+        secureTextEntry = false,
+    }: InputProps<T>) =>{
+    const handleChangeText = (text: string) => {
+        onTextChange(text, inputType);
+    };
     return(
         <View style={[styles.input, externalStyles]}>
-            <TextInput  placeholder={placeholder}/>
+            <TextInput
+                value={value}
+                onChangeText={handleChangeText}
+                placeholder={placeholder}
+                secureTextEntry={secureTextEntry}
+            />
             {showBtn}
         </View>
-)
+    )
 }
 
 export default Input;

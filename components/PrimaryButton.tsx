@@ -5,11 +5,12 @@ import {colors} from "../styles/global";
 
 interface PrimaryButtonProps {
     children: React.ReactNode;
+    handlePress: () => void;
 }
 
-const PrimaryButton: FC<PrimaryButtonProps>= ({children}) => {
+const PrimaryButton: FC<PrimaryButtonProps>= ({children, handlePress}) => {
     return (
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity onPress={handlePress} style={styles.button}>
             {children}
         </TouchableOpacity>
     )

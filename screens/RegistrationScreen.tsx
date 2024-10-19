@@ -1,76 +1,101 @@
+import Input from "../components/Input";
+import {useState} from "react";
 import {
-    Dimensions,
-    Image,
+    Keyboard,
+    KeyboardAvoidingView,
+    Platform,
     StyleSheet,
     Text,
-    TextInput,
-    TouchableOpacity,
-    TouchableWithoutFeedback,
+    TouchableOpacity, TouchableWithoutFeedback,
     View
 } from "react-native";
-import {baseTypography, colors, primaryBtn, title} from "../styles/global";
-import Input from "../components/Input";
+import {
+    baseTypography,
+    colors,
+    container, innerWrapper, passwordBtn,
+    primaryBtn,
+    registrationAndLoginContainer,
+    title, wrapInputMarginBottom
+} from "../styles/global";
 import PrimaryButton from "../components/PrimaryButton";
-import Svg, {Circle, Path} from "react-native-svg";
+import BackgroundImg from "../components/BackgroundImg";
+import ShowPasswordBtn from "../components/ShowPasswordBtn";
+import AuthPrompt from "../components/AuthPrompt";
 
-const {width, height} = Dimensions.get("window");
 
 const LoginScreen = () => {
-    const showPassword = (
-        <TouchableOpacity>
-            <Text style={styles.secondaryText}>Показати</Text>
-        </TouchableOpacity>
-    )
-    return (
-        <View style={styles.container}>
-            <Image style={styles.backgroundImg} source={require('../assets/images/background.png')} />
-            <View style={styles.registrationAndLoginContainer}>
-               <View style={styles.wrapperAvatar}>
-                   <TouchableOpacity style={styles.plusContainer}>
-                       <Text style={styles.plusSign}>+</Text>
-                   </TouchableOpacity>
-               </View>
-                <Text style={[title, baseTypography]}>
-                    Реєстрація
-                </Text>
-                <View style={[styles.innerWrapper, styles.wrapInputMarginBottom]}>
-                    <Input placeholder="Логін"/>
-                    <Input placeholder="Адреса електронної пошти"/>
-                    <Input placeholder="Пароль" showBtn={showPassword} externalStyles={{...styles.passwordBtn}}/>
-                </View>
-                <View style={styles.innerWrapper}>
-                    <PrimaryButton>
-                        <Text style={[primaryBtn,baseTypography]}>
-                            Зареєстуватися
-                        </Text>
-                    </PrimaryButton>
-                    <View style={styles.textLinkContainer}>
-                        <Text style={[styles.secondaryText, styles.rightMargin]}>Вже є акаунт?</Text>
-                            <TouchableOpacity>
-                                <Text style={[styles.secondaryText, styles.underline]}>
-                                    Увійти
-                                </Text>
-                            </TouchableOpacity>
+    const [inputQuery, setInputQuery] = useState({email: "", password: "", login: ""});
+    const [isPasswordVisible, setIsPasswordVisible] = useState(false)
 
+    const handlerInputChange = (value: string, input: 'email' | 'password' | 'login') => {
+        setInputQuery(prev=>({...prev, [input]: value}));
+    }
+
+    const handlerShowPassword = () => {
+        setIsPasswordVisible(prev => !prev)
+    }
+
+    const handlerOnRegistration = () => {
+        console.log('Your registration information', inputQuery);
+    }
+
+    return (
+        <TouchableWithoutFeedback onPress={()=> Keyboard.dismiss()}>
+            <KeyboardAvoidingView
+                style={container}
+                behavior={Platform.OS == "ios" ? 'padding' : 'height'}
+            >
+                <BackgroundImg/>
+                <View style={[styles.registrationContainer, registrationAndLoginContainer]}>
+                   <View style={styles.wrapperAvatar}>
+                       <TouchableOpacity style={styles.plusContainer}>
+                           <Text style={styles.plusSign}>+</Text>
+                       </TouchableOpacity>
+                   </View>
+                    <Text style={[title, baseTypography]}>
+                        Реєстрація
+                    </Text>
+                    <KeyboardAvoidingView style={[innerWrapper, wrapInputMarginBottom]} behavior={Platform.OS === "ios" ? "padding" : "height"} >
+                        <View style={[innerWrapper, wrapInputMarginBottom]}>
+                            <Input
+                                value={inputQuery.login}
+                                inputType={'login'}
+                                onTextChange={handlerInputChange}
+                                placeholder="Логін"
+                            />
+                            <Input
+                                value={inputQuery.email}
+                                inputType={'email'}
+                                onTextChange={handlerInputChange}
+                                placeholder="Адреса електронної пошти"
+                            />
+                            <Input
+                                value={inputQuery.password}
+                                inputType={'password'}
+                                onTextChange={handlerInputChange}
+                                placeholder="Пароль"
+                                secureTextEntry={isPasswordVisible}
+                                showBtn={<ShowPasswordBtn handlerHidePassword={handlerShowPassword}/>}
+                                externalStyles={{...passwordBtn}}/>
+                        </View>
+                    </KeyboardAvoidingView>
+                    <View style={innerWrapper}>
+                        <PrimaryButton handlePress={handlerOnRegistration}>
+                            <Text style={[primaryBtn,baseTypography]}>
+                                Зареєстуватися
+                            </Text>
+                        </PrimaryButton>
+                        <AuthPrompt answer={'Вже є акаунт?'} textBtn={'Увійти'}/>
                     </View>
                 </View>
-            </View>
-        </View>
+            </KeyboardAvoidingView>
+        </TouchableWithoutFeedback>
     )
 }
 
 export default LoginScreen;
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: "flex-end",
-    },
-    backgroundImg: {
-        position: "absolute",
-        height: height,
-        width: width,
-    },
     wrapperAvatar:{
         position: "absolute",
         width: 120,
@@ -104,39 +129,9 @@ const styles = StyleSheet.create({
         left: '50%',
         transform: [{ translateX: -12 }, { translateY: -27 }],
     },
-    registrationAndLoginContainer: {
-        paddingHorizontal: 16,
+    registrationContainer: {
         paddingTop: 92,
-        paddingBottom: 78,
-        width: width,
-        backgroundColor: colors.white,
-        borderTopRightRadius: 25,
-        borderTopLeftRadius: 25,
+        height: '70%',
+        paddingBottom: 60,
     },
-    innerWrapper: {
-        gap: 16,
-    },
-    wrapInputMarginBottom: {
-        marginBottom: 43
-    },
-    secondaryText: {
-        fontSize: 16,
-        fontWeight: "400",
-        color: colors.darkBlue,
-    },
-    passwordBtn: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-    },
-    textLinkContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    underline: {
-        textDecorationLine: 'underline',
-    },
-    rightMargin: {
-        marginRight: 2
-    }
 })
