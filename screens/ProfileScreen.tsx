@@ -7,7 +7,7 @@ import {
 } from "react-native";
 import BackgroundImg from "../components/BackgroundImg";
 import {
-    baseTypography, colors,
+    baseTypography,
     container, plusContainer, registrationAndLoginContainer, title, wrapperAvatar,
 } from "../styles/global";
 import CloseIcon from "../icons/CloseIcon";
@@ -15,9 +15,7 @@ import LogoutIcon from "../icons/LogoutIcon";
 import {useNavigation} from "@react-navigation/native";
 import {StackNavigationProp} from "@react-navigation/stack";
 import {RootStackParamList} from "../navigation/StackNavigator";
-import CommentIcon from "../icons/CommentIcon";
-import LikeIcon from "../icons/LikeIcon";
-import LocationIcon from "../icons/LocationIcon";
+import ListImg from "../components/ListImg";
 
 type ProfileScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
 
@@ -48,93 +46,27 @@ const ProfileScreen = () => {
                         Natali Romanova
                     </Text>
                     <ScrollView contentContainerStyle={{gap: 35, paddingBottom: 46}}>
-                        <View >
-                            <Image style={styles.img}  source={require('../assets/images/wood.png')}/>
-                            <Text style={styles.nameImg}>
-                                Ліс
-                            </Text>
-                            <View style={styles.wrapTextUnderImg}>
-                                <View style={{flexDirection: 'row', gap: 24}}>
-                                    <View style={styles.wrapCommentAndLike}>
-                                        <CommentIcon/>
-                                        <Text style={styles.text}>
-                                            8
-                                        </Text>
-                                    </View>
-                                    <View style={styles.wrapCommentAndLike}>
-                                        <LikeIcon/>
-                                        <Text style={styles.text}>
-                                            153
-                                        </Text>
-                                    </View>
-                                </View>
-                                <View style={styles.wrapCommentAndLike}>
-                                    <LocationIcon/>
-                                    <Text style={[styles.text,{textDecorationLine: 'underline'}]}>
-                                        Ukraine
-                                    </Text>
-                                </View>
-
-                            </View>
-                        </View>
-                        <View >
-                            <Image style={styles.img}  source={require('../assets/images/blackSea.png')}/>
-                            <Text style={styles.nameImg}>
-                                Захід на Чорному морі
-                            </Text>
-                            <View style={styles.wrapTextUnderImg}>
-                                <View style={{flexDirection: 'row', gap: 24}}>
-                                    <View style={styles.wrapCommentAndLike}>
-                                        <CommentIcon/>
-                                        <Text style={styles.text}>
-                                            3
-                                        </Text>
-                                    </View>
-                                    <View style={styles.wrapCommentAndLike}>
-                                        <LikeIcon/>
-                                        <Text style={styles.text}>
-                                            200
-                                        </Text>
-                                    </View>
-                                </View>
-                                <View style={styles.wrapCommentAndLike}>
-                                    <LocationIcon/>
-                                    <Text style={[styles.text,{textDecorationLine: 'underline'}]}>
-                                        Ukraine
-                                    </Text>
-                                </View>
-
-                            </View>
-                        </View>
-                        <View >
-                            <Image style={styles.img}  source={require('../assets/images/house.png')}/>
-                            <Text style={styles.nameImg}>
-                                Старий будиночок у Венеції
-                            </Text>
-                            <View style={styles.wrapTextUnderImg}>
-                                <View style={{flexDirection: 'row', gap: 24}}>
-                                    <View style={styles.wrapCommentAndLike}>
-                                        <CommentIcon/>
-                                        <Text style={styles.text}>
-                                            50
-                                        </Text>
-                                    </View>
-                                    <View style={styles.wrapCommentAndLike}>
-                                        <LikeIcon/>
-                                        <Text style={styles.text}>
-                                            200
-                                        </Text>
-                                    </View>
-                                </View>
-                                <View style={styles.wrapCommentAndLike}>
-                                    <LocationIcon/>
-                                    <Text style={[styles.text,{textDecorationLine: 'underline'}]}>
-                                        Italy
-                                    </Text>
-                                </View>
-
-                            </View>
-                        </View>
+                        <ListImg
+                            sourceImg={require('../assets/images/wood.png')}
+                            name={'Ліс'}
+                            countComment={'8'}
+                            countLikes={'153'}
+                            location={'Ukraine'}
+                        />
+                        <ListImg
+                            sourceImg={require('../assets/images/blackSea.png')}
+                            name={'Захід на Чорному морі'}
+                            countComment={'3'}
+                            countLikes={'200'}
+                            location={'Ukraine'}
+                        />
+                        <ListImg
+                            sourceImg={require('../assets/images/house.png')}
+                            name={'Старий будиночок у Венеції'}
+                            countComment={'50'}
+                            countLikes={'200'}
+                            location={'Italy'}
+                        />
                     </ScrollView>
                 </View>
             </View>
@@ -151,30 +83,5 @@ const styles = StyleSheet.create({
         marginTop: 22,
         alignItems: 'flex-end'
     },
-    img: {
-        maxWidth: 361,
-        height: 240,
-        borderRadius: 8,
-    },
-    nameImg: {
-        paddingTop: 16,
-        color: colors.blackPrimary,
-        fontSize: 16,
-        fontWeight: 500,
-    },
-    wrapCommentAndLike: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 6
-    },
-    wrapTextUnderImg: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        marginTop: 10
-    },
-    text: {
-        fontSize: 16,
-        color: colors.blackPrimary,
-        fontWeight: 400,
-    }
+
 })
