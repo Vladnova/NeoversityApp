@@ -1,6 +1,7 @@
-import {useState} from "react";
+import {FC, useState} from "react";
 import {Keyboard, KeyboardAvoidingView, Platform, StyleSheet, Text, TouchableWithoutFeedback, View} from "react-native";
 import {
+    backgroundOrange,
     baseTypography,
     container,
     innerWrapper, passwordBtn, primaryBtn,
@@ -13,8 +14,12 @@ import Input from "../components/Input";
 import ShowPasswordBtn from "../components/ShowPasswordBtn";
 import PrimaryButton from "../components/PrimaryButton";
 import AuthPrompt from "../components/AuthPrompt";
+import {StackScreenProps} from "@react-navigation/stack";
+import {RootStackParamList} from "../navigation/StackNavigator";
 
-const LoginScreen = () => {
+type LoginScreenProps = StackScreenProps<RootStackParamList, 'Login'>
+
+const LoginScreen: FC<LoginScreenProps> = ({navigation}) => {
     const [inputQuery, setInputQuery] = useState({email: "", password: ""});
     const [isPasswordVisible, setIsPasswordVisible] = useState(false)
 
@@ -27,7 +32,10 @@ const LoginScreen = () => {
     }
 
     const handlerOnLogin = () => {
-        console.log('Your login information', inputQuery);
+        navigation.navigate('Home');
+    }
+    const handlerRegistration = () => {
+        navigation.navigate('Registration');
     }
     return (
         <TouchableWithoutFeedback onPress={()=> Keyboard.dismiss()}>
@@ -60,10 +68,10 @@ const LoginScreen = () => {
                         </View>
                     </KeyboardAvoidingView>
                     <View style={innerWrapper}>
-                        <PrimaryButton handlePress={handlerOnLogin}>
+                        <PrimaryButton externalStyles={backgroundOrange} handlePress={handlerOnLogin}>
                             <Text style={[primaryBtn, baseTypography]}>Увійти</Text>
                         </PrimaryButton>
-                        <AuthPrompt answer={'Немає акаунту?'} textBtn={'Зареєструватися'}/>
+                        <AuthPrompt handlerTouch={handlerRegistration} answer={'Немає акаунту?'} textBtn={'Зареєструватися'}/>
                     </View>
                 </View>
             </KeyboardAvoidingView>
@@ -77,7 +85,7 @@ export default LoginScreen;
 const styles = StyleSheet.create({
     loginContainer: {
         paddingTop: 32,
-        height: '50%',
+        height: '55%',
         paddingBottom: 120,
     }
 })

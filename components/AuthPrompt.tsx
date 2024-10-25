@@ -5,13 +5,14 @@ import {FC} from "react";
 interface AuthPromptProps {
     answer: string;
     textBtn: string;
+    handlerTouch: () => void;
 }
 
-const AuthPrompt: FC<AuthPromptProps> = ({answer, textBtn}) => {
+const AuthPrompt: FC<AuthPromptProps> = ({answer, textBtn, handlerTouch}) => {
     return(
         <View style={styles.textLinkContainer}>
             <Text style={[secondaryText, styles.rightMargin]}>{answer}</Text>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={handlerTouch}>
                 <Text style={[secondaryText, styles.underline]}>
                     {textBtn}
                 </Text>

@@ -1,6 +1,7 @@
 import Input from "../components/Input";
-import {useState} from "react";
+import {FC, useState} from "react";
 import {
+    Image,
     Keyboard,
     KeyboardAvoidingView,
     Platform,
@@ -10,20 +11,25 @@ import {
     View
 } from "react-native";
 import {
+    backgroundOrange,
     baseTypography,
     colors,
-    container, innerWrapper, passwordBtn,
+    container, innerWrapper, passwordBtn, plusContainer, plusSign,
     primaryBtn,
     registrationAndLoginContainer,
-    title, wrapInputMarginBottom
+    title, wrapInputMarginBottom, wrapperAvatar
 } from "../styles/global";
 import PrimaryButton from "../components/PrimaryButton";
 import BackgroundImg from "../components/BackgroundImg";
 import ShowPasswordBtn from "../components/ShowPasswordBtn";
 import AuthPrompt from "../components/AuthPrompt";
+import {StackScreenProps} from "@react-navigation/stack";
+import {RootStackParamList} from "../navigation/StackNavigator";
+
+type RegistrationScreenProps = StackScreenProps<RootStackParamList, 'Registration'>
 
 
-const LoginScreen = () => {
+const RegistrationScreen: FC<RegistrationScreenProps> = ({navigation}) => {
     const [inputQuery, setInputQuery] = useState({email: "", password: "", login: ""});
     const [isPasswordVisible, setIsPasswordVisible] = useState(false)
 
@@ -36,7 +42,11 @@ const LoginScreen = () => {
     }
 
     const handlerOnRegistration = () => {
-        console.log('Your registration information', inputQuery);
+        navigation.navigate('Home')
+    }
+    
+    const handlerLogin = () => {
+        navigation.navigate('Login')
     }
 
     return (
@@ -47,9 +57,10 @@ const LoginScreen = () => {
             >
                 <BackgroundImg/>
                 <View style={[styles.registrationContainer, registrationAndLoginContainer]}>
-                   <View style={styles.wrapperAvatar}>
-                       <TouchableOpacity style={styles.plusContainer}>
-                           <Text style={styles.plusSign}>+</Text>
+                   <View style={wrapperAvatar}>
+                       <Image  source={require('../assets/images/logo.png')}/>
+                       <TouchableOpacity style={plusContainer}>
+                           <Text style={plusSign}>+</Text>
                        </TouchableOpacity>
                    </View>
                     <Text style={[title, baseTypography]}>
@@ -80,12 +91,12 @@ const LoginScreen = () => {
                         </View>
                     </KeyboardAvoidingView>
                     <View style={innerWrapper}>
-                        <PrimaryButton handlePress={handlerOnRegistration}>
+                        <PrimaryButton externalStyles={backgroundOrange} handlePress={handlerOnRegistration}>
                             <Text style={[primaryBtn,baseTypography]}>
                                 Зареєстуватися
                             </Text>
                         </PrimaryButton>
-                        <AuthPrompt answer={'Вже є акаунт?'} textBtn={'Увійти'}/>
+                        <AuthPrompt handlerTouch={handlerLogin} answer={'Вже є акаунт?'} textBtn={'Увійти'}/>
                     </View>
                 </View>
             </KeyboardAvoidingView>
@@ -93,42 +104,10 @@ const LoginScreen = () => {
     )
 }
 
-export default LoginScreen;
+export default RegistrationScreen;
 
 const styles = StyleSheet.create({
-    wrapperAvatar:{
-        position: "absolute",
-        width: 120,
-        height: 120,
-        backgroundColor: colors.lightGrey,
-        borderRadius: 16,
-        left: "50%",
-        top: -60,
-        marginLeft: 15,
-        transform: [{ translateX: -60 }],
-    },
-    plusContainer: {
-        width: 30,
-        height: 30,
-        borderRadius: 15,
-        backgroundColor: 'transparent',
-        borderWidth: 1,
-        borderColor: colors.orange,
-        justifyContent: 'center',
-        alignItems: 'center',
-        position: "absolute",
-        right: -15,
-        bottom: 15
-    },
-    plusSign: {
-        position: "absolute",
-        fontSize: 40,
-        fontWeight: '200',
-        color: colors.orange,
-        top: '50%',
-        left: '50%',
-        transform: [{ translateX: -12 }, { translateY: -27 }],
-    },
+
     registrationContainer: {
         paddingTop: 92,
         height: '70%',
