@@ -1,6 +1,6 @@
 import {
     Button,
-    Dimensions,
+    Dimensions, Image,
     Keyboard,
     KeyboardAvoidingView,
     StyleSheet,
@@ -27,6 +27,7 @@ const CreatePostsScreen = () => {
     const [inputQuery, setInputQuery] = useState({ name: "", location: "" });
     const [cameraPermission, requestCameraPermission] = useCameraPermissions();
     const [facing, setFacing] = useState<CameraType>('back');
+    const [photo, setPhoto] = useState('');
     const cameraRef = useRef<CameraView | null>(null);
 
     useEffect(() => {
@@ -57,24 +58,12 @@ const CreatePostsScreen = () => {
         });
     }
 
-    // const takePicture = async () => {
-    //     if (cameraRef.current) {
-    //         const photo = await cameraRef.current.takePictureAsync();
-    //         console.log(photo);
-    //     }
-    // };
-    const [isPreview, setIsPreview] = useState(false);
-    const takePicture = async () => {
-        if (cameraRef.current) {
-            const options = { quality: 0.5, base64: true, skipProcessing: true };
-            const data = await cameraRef.current.takePictureAsync(options);
-            const source = data?.uri;
-            if (source) {
-                await cameraRef.current.pausePreview();
-                setIsPreview(true);
-                console.log("picture source", source);
-            }
+    const takePhoto = async () => {
+        const photo = await cameraRef?.current?.takePictureAsync();
+        if (photo) {
+            setPhoto(photo.uri);
         }
+
     };
 
     if (!cameraPermission) {
@@ -97,13 +86,19 @@ const CreatePostsScreen = () => {
     return (
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
             <KeyboardAvoidingView style={styles.container}>
-                <View style={styles.cameraContainer}>
-                    <CameraView style={styles.camera} ref={cameraRef} facing={facing}>
-                        <View style={styles.buttonContainer}>
-                            <TouchableOpacity style={styles.containerPhoto} onPress={takePicture}>
-                                <PhotoIcon />
-                            </TouchableOpacity>
-                        </View>
+                <View style={styles.photo}>
+                    <CameraView style={styles.camera} ref={cameraRef}>
+                        {photo && (
+                            <View style={styles.takePhotoContainer}>
+                                <Image
+                                    source={{ uri: photo }}
+                                    style={{ height: 100, width: 100 }}
+                                />
+                            </View>
+                        )}
+                        <TouchableOpacity style={styles.containerIcon} onPress={takePhoto}>
+                            <PhotoIcon />
+                        </TouchableOpacity>
                     </CameraView>
                 </View>
 
@@ -141,6 +136,7 @@ const styles = StyleSheet.create({
         flex: 1,
         paddingHorizontal: 16,
         backgroundColor: colors.white,
+        paddingTop: 20
     },
     cameraContainer: {
         height: 240, // Висота для камери
@@ -168,7 +164,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     containerPhoto: {
-        backgroundColor: colors.borderGray,
+        // backgroundColor: colors.borderGray,
         borderRadius: 8,
         width: width - 32,
         height: 240,
@@ -198,5 +194,31 @@ const styles = StyleSheet.create({
         color: colors.gray,
         fontSize: 16,
         fontWeight: "400",
-    }
+    },
+    takePhotoContainer: {
+        position: 'absolute',
+        top: 10,
+        left: 10,
+        borderColor: '#ffffff',
+        borderWidth: 1,
+    },
+    photo: {
+        height: 240,
+        borderRadius: 8,
+        backgroundColor: '#F6F6F6',
+        marginBottom: 8,
+    },
+    containerIcon: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 90,
+        marginBottom: 90,
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        width: 60,
+        height: 60,
+        borderRadius: 50,
+        backgroundColor: '#FFFFFF',
+    },
 });
