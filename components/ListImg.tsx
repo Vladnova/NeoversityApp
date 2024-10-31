@@ -1,9 +1,14 @@
-import {Image, StyleSheet, Text, View} from "react-native";
+import {Image, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import CommentIcon from "../icons/CommentIcon";
 import LikeIcon from "../icons/LikeIcon";
 import LocationIcon from "../icons/LocationIcon";
-import {colors} from "../styles/global";
+import {colors, imgList} from "../styles/global";
 import {FC} from "react";
+import { useNavigation } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { RootStackParamList } from "../navigation/StackNavigator";
+
+type CommentsScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Comments'>;
 
 interface ListImgProps {
     sourceImg: any;
@@ -11,37 +16,48 @@ interface ListImgProps {
     countComment: string;
     countLikes: string;
     location: string;
-
+    latitude: number;
+    longitude: number;
 }
 
-const ListImg:FC<ListImgProps> = ({sourceImg, countLikes, countComment, location, name}) => {
+const ListImg:FC<ListImgProps> = ({sourceImg, countLikes, countComment, location, name, latitude, longitude}) => {
+    const navigation = useNavigation<CommentsScreenNavigationProp>();
+
+    const handleComment = () => {
+        navigation.navigate('Comments');
+    };
+
+    const handlerLocation = () => {
+        navigation.navigate('Location', { latitude, longitude });
+    }
+
     return (
         <View >
-            <Image style={styles.img}  source={sourceImg}/>
+            <Image style={imgList}  source={sourceImg}/>
             <Text style={styles.nameImg}>
                 {name}
             </Text>
             <View style={styles.wrapTextUnderImg}>
                 <View style={{flexDirection: 'row', gap: 24}}>
-                    <View style={styles.wrapCommentAndLike}>
+                    <TouchableOpacity style={styles.wrapCommentAndLike} onPress={handleComment}>
                         <CommentIcon/>
                         <Text style={styles.text}>
                             {countComment}
                         </Text>
-                    </View>
-                    <View style={styles.wrapCommentAndLike}>
+                    </TouchableOpacity>
+                    <View style={styles.wrapCommentAndLike} >
                         <LikeIcon/>
                         <Text style={styles.text}>
                             {countLikes}
                         </Text>
                     </View>
                 </View>
-                <View style={styles.wrapCommentAndLike}>
+                <TouchableOpacity style={styles.wrapCommentAndLike} onPress={handlerLocation}>
                     <LocationIcon/>
                     <Text style={[styles.text,{textDecorationLine: 'underline'}]}>
                         {location}
                     </Text>
-                </View>
+                </TouchableOpacity>
 
             </View>
         </View>
@@ -52,12 +68,6 @@ const ListImg:FC<ListImgProps> = ({sourceImg, countLikes, countComment, location
 export default ListImg
 
 const styles = StyleSheet.create({
-
-    img: {
-        maxWidth: 361,
-        height: 240,
-        borderRadius: 8,
-    },
     nameImg: {
         paddingTop: 16,
         color: colors.blackPrimary,

@@ -52,6 +52,8 @@ const ProfileScreen = () => {
                             countComment={'8'}
                             countLikes={'153'}
                             location={'Ukraine'}
+                            latitude={48.160076}
+                            longitude={24.499850}
                         />
                         <ListImg
                             sourceImg={require('../assets/images/blackSea.png')}
@@ -59,6 +61,8 @@ const ProfileScreen = () => {
                             countComment={'3'}
                             countLikes={'200'}
                             location={'Ukraine'}
+                            latitude={46.225713}
+                            longitude={30.610853}
                         />
                         <ListImg
                             sourceImg={require('../assets/images/house.png')}
@@ -66,6 +70,8 @@ const ProfileScreen = () => {
                             countComment={'50'}
                             countLikes={'200'}
                             location={'Italy'}
+                            latitude={41.920410}
+                            longitude={12.391017}
                         />
                     </ScrollView>
                 </View>

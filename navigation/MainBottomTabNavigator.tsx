@@ -15,7 +15,7 @@ import {colors} from "../styles/global";
 
 const Tab = createBottomTabNavigator();
 
-type TabNames = 'PostsTab' | 'CreatePostTab' | 'ProfileTab';
+export type TabNames = 'PostsTab' | 'CreatePostTab' | 'ProfileTab';
 
 const MainBottomTabNavigator = () => {
     const [activeTab, setActiveTab] = useState<TabNames>("PostsTab")
@@ -56,7 +56,7 @@ const MainBottomTabNavigator = () => {
                 <Tab.Screen
                     name="CreatePostTab"
                     component={CreatePostsScreen}
-                    options={({ navigation, route }) => ({
+                    options={({ navigation }) => ({
                         headerTitle: 'Створити публікацію',
                         headerLeft: () => (
                             <ButtonIcon onPress={() =>
@@ -75,6 +75,7 @@ const MainBottomTabNavigator = () => {
 
         ) : (
             <Tab.Navigator
+                initialRouteName="PostsTab"
                 screenOptions={({ route }) => ({
                     tabBarLabel: '',
                     tabBarActiveTintColor: 'white',

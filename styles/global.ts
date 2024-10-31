@@ -1,4 +1,4 @@
-import {Dimensions, TextStyle} from "react-native";
+import {Dimensions, ImageStyle, StyleProp, TextStyle} from "react-native";
 
 
 const {width} = Dimensions.get("window");
@@ -102,5 +102,11 @@ export const plusSign: TextStyle = {
     top: '50%',
     left: '50%',
     transform: [{ translateX: -12 }, { translateY: -27 }],
+}
+
+export const imgList:  StyleProp<ImageStyle> = {
+    maxWidth: 361,
+    height: 240,
+    borderRadius: 8,
 }
 
