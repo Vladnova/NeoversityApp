@@ -1,17 +1,18 @@
 import {StyleProp, StyleSheet, TouchableOpacity, ViewStyle} from "react-native";
 import {FC} from "react";
-import {colors} from "../styles/global";
+import {colors} from "../../styles/global";
 
 
 interface PrimaryButtonProps {
     children: React.ReactNode;
     handlePress: () => void;
     externalStyles: StyleProp<ViewStyle>;
+    disabled: boolean;
 }
 
-const PrimaryButton: FC<PrimaryButtonProps>= ({children, handlePress, externalStyles}) => {
+const PrimaryButton: FC<PrimaryButtonProps>= ({children, handlePress, externalStyles, disabled}) => {
     return (
-        <TouchableOpacity onPress={handlePress} style={[styles.button, externalStyles]}>
+        <TouchableOpacity disabled={!disabled} onPress={handlePress} style={[styles.button, disabled ? externalStyles : {backgroundColor: colors.gray}, ]}>
             {children}
         </TouchableOpacity>
     )

@@ -1,5 +1,5 @@
 import {Text, TouchableOpacity} from "react-native";
-import {secondaryText} from "../styles/global";
+import {secondaryText} from "../../styles/global";
 import {FC} from "react";
 
 interface ShowPasswordBtnProps {

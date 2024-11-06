@@ -81,12 +81,12 @@ export const wrapperAvatar: TextStyle = {
 }
 
 export const plusContainer: TextStyle = {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
+    // width: 30,
+    // height: 30,
+    // borderRadius: 15,
     backgroundColor: 'transparent',
-    borderWidth: 1,
-    borderColor: colors.orange,
+    // borderWidth: 1,
+    // borderColor: colors.orange,
     justifyContent: 'center',
     alignItems: 'center',
     position: "absolute",

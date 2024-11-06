@@ -1,10 +1,13 @@
 import 'react-native-gesture-handler';
 import {useEffect} from "react";
 import {useFonts} from "expo-font";
-import {ActivityIndicator} from 'react-native';
-import * as SplashScreen from 'expo-splash-screen';
+import {Provider} from "react-redux";
+import {ActivityIndicator, Text} from 'react-native';
 import {NavigationContainer} from "@react-navigation/native";
-import StackNavigator from "./navigation/StackNavigator";
+import {PersistGate} from "redux-persist/integration/react";
+import * as SplashScreen from 'expo-splash-screen';
+import StackNavigator from "./scr/navigation/StackNavigator";
+import store from "./scr/redux/store/store";
 
 
 
@@ -25,9 +28,17 @@ export default function App() {
     return <ActivityIndicator />
   }
   return (
-      <NavigationContainer>
-          <StackNavigator/>
-      </NavigationContainer>
+      <Provider store={store.store}>
+        <PersistGate
+            persistor={store.persistor}
+            loading={<Text>Loading...</Text>}
+        >
+            <NavigationContainer>
+                <StackNavigator/>
+            </NavigationContainer>
+        </PersistGate>
+      </Provider>
   );
 }
+
 

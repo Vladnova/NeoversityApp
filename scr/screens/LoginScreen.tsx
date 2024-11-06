@@ -8,7 +8,7 @@ import {
     registrationAndLoginContainer,
     title,
     wrapInputMarginBottom
-} from "../styles/global";
+} from "../../styles/global";
 import BackgroundImg from "../components/BackgroundImg";
 import Input from "../components/Input";
 import ShowPasswordBtn from "../components/ShowPasswordBtn";
@@ -16,23 +16,31 @@ import PrimaryButton from "../components/PrimaryButton";
 import AuthPrompt from "../components/AuthPrompt";
 import {StackScreenProps} from "@react-navigation/stack";
 import {RootStackParamList} from "../navigation/StackNavigator";
+import {useDispatch} from "react-redux";
+import {loginDB} from "../utils/auth";
 
 type LoginScreenProps = StackScreenProps<RootStackParamList, 'Login'>
 
 const LoginScreen: FC<LoginScreenProps> = ({navigation}) => {
     const [inputQuery, setInputQuery] = useState({email: "", password: ""});
-    const [isPasswordVisible, setIsPasswordVisible] = useState(false)
+    const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+
+    const {email, password} = inputQuery
+
+    const  dispatch = useDispatch();
 
     const handlerInputChange = (value: string, input: 'email' | 'password') => {
         setInputQuery(prev=>({...prev, [input]: value}));
     }
+
+    const isFormComplete = Object.values(inputQuery).every(field => field.trim() !== "");
 
     const handlerShowPassword = () => {
         setIsPasswordVisible(prev => !prev)
     }
 
     const handlerOnLogin = () => {
-        navigation.navigate('Home');
+        loginDB({email, password}, dispatch)
     }
     const handlerRegistration = () => {
         navigation.navigate('Registration');
@@ -51,13 +59,13 @@ const LoginScreen: FC<LoginScreenProps> = ({navigation}) => {
                     <KeyboardAvoidingView style={[innerWrapper, wrapInputMarginBottom]} behavior={Platform.OS === "ios" ? "padding" : "height"} >
                         <View style={[innerWrapper, wrapInputMarginBottom]}>
                             <Input
-                                value={inputQuery.email}
+                                value={email}
                                 onTextChange={handlerInputChange}
                                 inputType={'email'}
                                 placeholder={'Адреса електронної пошти'}
                             />
                             <Input
-                                value={inputQuery.password}
+                                value={password}
                                 onTextChange={handlerInputChange}
                                 inputType={'password'}
                                 placeholder={'Пароль'}
@@ -68,7 +76,7 @@ const LoginScreen: FC<LoginScreenProps> = ({navigation}) => {
                         </View>
                     </KeyboardAvoidingView>
                     <View style={innerWrapper}>
-                        <PrimaryButton externalStyles={backgroundOrange} handlePress={handlerOnLogin}>
+                        <PrimaryButton disabled={isFormComplete} externalStyles={backgroundOrange} handlePress={handlerOnLogin}>
                             <Text style={[primaryBtn, baseTypography]}>Увійти</Text>
                         </PrimaryButton>
                         <AuthPrompt handlerTouch={handlerRegistration} answer={'Немає акаунту?'} textBtn={'Зареєструватися'}/>

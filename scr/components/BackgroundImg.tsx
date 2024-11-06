@@ -4,7 +4,7 @@ import {Dimensions, Image, StyleSheet} from "react-native";
 const {width, height} = Dimensions.get("window");
 const BackgroundImg = () => {
     return (
-        <Image style={styles.backgroundImg} source={require('../assets/images/background.png')} />
+        <Image style={styles.backgroundImg} source={require('../../assets/images/background.png')} />
     )
 }
 

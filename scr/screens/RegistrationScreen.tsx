@@ -1,5 +1,13 @@
 import Input from "../components/Input";
 import {FC, useState} from "react";
+import {StackScreenProps} from "@react-navigation/stack";
+import PrimaryButton from "../components/PrimaryButton";
+import BackgroundImg from "../components/BackgroundImg";
+import ShowPasswordBtn from "../components/ShowPasswordBtn";
+import AuthPrompt from "../components/AuthPrompt";
+import {RootStackParamList} from "../navigation/StackNavigator";
+import {registerDB} from "../utils/auth";
+import * as ImagePicker from 'expo-image-picker';
 import {
     Image,
     Keyboard,
@@ -12,26 +20,29 @@ import {
 } from "react-native";
 import {
     backgroundOrange,
-    baseTypography,
-    colors,
-    container, innerWrapper, passwordBtn, plusContainer, plusSign,
+    baseTypography, colors,
+    container, innerWrapper, passwordBtn, plusContainer,
     primaryBtn,
     registrationAndLoginContainer,
     title, wrapInputMarginBottom, wrapperAvatar
-} from "../styles/global";
-import PrimaryButton from "../components/PrimaryButton";
-import BackgroundImg from "../components/BackgroundImg";
-import ShowPasswordBtn from "../components/ShowPasswordBtn";
-import AuthPrompt from "../components/AuthPrompt";
-import {StackScreenProps} from "@react-navigation/stack";
-import {RootStackParamList} from "../navigation/StackNavigator";
+} from "../../styles/global";
+import {useDispatch} from "react-redux";
+import AddAvatarIcon from "../../icons/AddAvatarIcon";
+import CloseIcon from "../../icons/CloseIcon";
+
 
 type RegistrationScreenProps = StackScreenProps<RootStackParamList, 'Registration'>
 
 
 const RegistrationScreen: FC<RegistrationScreenProps> = ({navigation}) => {
     const [inputQuery, setInputQuery] = useState({email: "", password: "", login: ""});
-    const [isPasswordVisible, setIsPasswordVisible] = useState(false)
+    const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+    const [selectedImg, setSelectedImg] = useState<string | null>(null);
+    const  dispatch = useDispatch();
+
+    const {login, password, email} = inputQuery;
+
+    const isFormComplete = Object.values(inputQuery).every(field => field.trim() !== "");
 
     const handlerInputChange = (value: string, input: 'email' | 'password' | 'login') => {
         setInputQuery(prev=>({...prev, [input]: value}));
@@ -41,13 +52,57 @@ const RegistrationScreen: FC<RegistrationScreenProps> = ({navigation}) => {
         setIsPasswordVisible(prev => !prev)
     }
 
-    const handlerOnRegistration = () => {
-        navigation.navigate('Home')
+    const handlerOnRegistration =  async () => {
+        let imageFile: File | undefined;
+        let fileName;
+        if(selectedImg) {
+            const response = await fetch(selectedImg);
+            const file = await response.blob();
+
+            // Перетворюємо Blob на File, якщо це необхідно
+            fileName = selectedImg.split('/').pop() || "avatar"; // Отримуємо ім'я файлу з URI
+            const fileType = file.type; // Отримуємо тип файлу
+
+            imageFile = new File([file], fileName, { type: fileType });
+        }
+
+        registerDB({
+            email,
+            password,
+            login,
+            imageFile,
+            fileName,
+            dirName: 'avatars'
+        }, dispatch);
+    }
+
+    const handlerDeleteAvatar = () => {
+        setSelectedImg(null)
     }
     
     const handlerLogin = () => {
         navigation.navigate('Login')
     }
+
+    const pickImage = async () => {
+        const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (!permissionResult.granted) {
+            alert("Permission to access media library is required!");
+            return;
+        }
+
+        const result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: false,
+            quality: 1,
+        });
+
+        if (!result.canceled) {
+            const uri = result.assets[0].uri;
+            setSelectedImg(uri);
+        }
+    };
+
 
     return (
         <TouchableWithoutFeedback onPress={()=> Keyboard.dismiss()}>
@@ -58,15 +113,23 @@ const RegistrationScreen: FC<RegistrationScreenProps> = ({navigation}) => {
                 <BackgroundImg/>
                 <View style={[styles.registrationContainer, registrationAndLoginContainer]}>
                    <View style={wrapperAvatar}>
-                       <Image  source={require('../assets/images/logo.png')}/>
-                       <TouchableOpacity style={plusContainer}>
-                           <Text style={plusSign}>+</Text>
+                       {selectedImg ? (
+                           <Image source={{uri:selectedImg}} style={styles.avatar}/>
+                       ) : (<Image style={[styles.avatar, {backgroundColor: colors.lightGrey}]} source={require('../../assets/images/defaultAvatar.png')}/>)}
+
+                       <TouchableOpacity
+                           style={plusContainer}
+                           onPress={ selectedImg ? handlerDeleteAvatar  : pickImage}>
+                           {selectedImg ? (<CloseIcon/>) : (<AddAvatarIcon/>)}
                        </TouchableOpacity>
                    </View>
                     <Text style={[title, baseTypography]}>
                         Реєстрація
                     </Text>
-                    <KeyboardAvoidingView style={[innerWrapper, wrapInputMarginBottom]} behavior={Platform.OS === "ios" ? "padding" : "height"} >
+                    <KeyboardAvoidingView
+                        style={[innerWrapper, wrapInputMarginBottom]}
+                        behavior={Platform.OS === "ios" ? "padding" : "height"}
+                    >
                         <View style={[innerWrapper, wrapInputMarginBottom]}>
                             <Input
                                 value={inputQuery.login}
@@ -91,7 +154,7 @@ const RegistrationScreen: FC<RegistrationScreenProps> = ({navigation}) => {
                         </View>
                     </KeyboardAvoidingView>
                     <View style={innerWrapper}>
-                        <PrimaryButton externalStyles={backgroundOrange} handlePress={handlerOnRegistration}>
+                        <PrimaryButton disabled={isFormComplete} externalStyles={backgroundOrange} handlePress={handlerOnRegistration}>
                             <Text style={[primaryBtn,baseTypography]}>
                                 Зареєстуватися
                             </Text>
@@ -113,4 +176,10 @@ const styles = StyleSheet.create({
         height: '70%',
         paddingBottom: 60,
     },
+    avatar: {
+        width: 120,
+        height: 120,
+        borderRadius: 16,
+        objectFit: 'cover',
+    }
 })

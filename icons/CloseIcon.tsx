@@ -2,8 +2,8 @@ import * as React from "react"
 import Svg, { SvgProps, Circle, Path } from "react-native-svg"
 const CloseIcon = (props: SvgProps) => (
     <Svg
-        width={37}
-        height={37}
+        width={30}
+        height={30}
         fill="none"
         {...props}
     >

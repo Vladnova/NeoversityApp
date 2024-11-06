@@ -1,6 +1,8 @@
 import {Image, ImageStyle, StyleProp, StyleSheet, Text, View, ViewStyle} from "react-native";
-import {colors} from "../styles/global";
+import {colors} from "../../styles/global";
 import {FC} from "react";
+import {useSelector} from "react-redux";
+import {RootState} from "../redux/store/store";
 
 interface ItemCommentProps {
     comment: string;
@@ -10,13 +12,24 @@ interface ItemCommentProps {
     styleIconExist: StyleProp<ImageStyle>;
 }
 
-const ItemComment: FC<ItemCommentProps> = ({comment, commentDate, icon, styleContainerExist, styleIconExist}) => {
+const ItemComment: FC<ItemCommentProps> = ({comment, commentDate, styleContainerExist, styleIconExist}) => {
+    const user = useSelector((state: RootState) => state.user.userInfo);
     return (
         <View style={[styles.containerComment, styleContainerExist]}>
-            <Image
-                style={[styles.logo, styleIconExist]}
-                source={icon}
-            />
+            {user?.avatar ?
+                (
+                    <Image
+                        style={[styles.logo, styleIconExist]}
+                        source={{uri: user.avatar}}
+                    />
+                ):
+                (
+                    <Image
+                        style={[styles.logo, styleIconExist]}
+                        source={require('../../assets/images/defaultAvatar.png')}
+                    />
+                )
+            }
             <View style={styles.containerText}>
                 <Text
                     style={styles.textComment}

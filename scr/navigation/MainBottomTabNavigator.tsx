@@ -1,24 +1,29 @@
 import {useState} from "react";
 import {View} from "react-native";
-import ButtonIcon from "../components/ButtonIcon";
-import ArrowBackIcon from "../icons/ArrowBackIcon";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import DeleteIcon from "../icons/DeleteIcon";
+import DeleteIcon from "../../icons/DeleteIcon";
 import CreatePostsScreen from "../screens/CreatePostsScreen";
-import PostsIcon from "../icons/PostsIcon";
-import CreatePostIcon from "../icons/CreatePostIcon";
-import ProfileIcon from "../icons/ProfileIcon";
+import ButtonIcon from "../components/ButtonIcon";
+import ArrowBackIcon from "../../icons/ArrowBackIcon";
+import PostsIcon from "../../icons/PostsIcon";
+import CreatePostIcon from "../../icons/CreatePostIcon";
+import ProfileIcon from "../../icons/ProfileIcon";
 import PostsScreen from "../screens/PostsScreen";
-import LogoutIcon from "../icons/LogoutIcon";
+import LogoutIcon from "../../icons/LogoutIcon";
 import ProfileScreen from "../screens/ProfileScreen";
-import {colors} from "../styles/global";
+import {colors} from "../../styles/global";
+import {useDispatch} from "react-redux";
+import {logoutDB} from "../utils/auth";
 
 const Tab = createBottomTabNavigator();
 
 export type TabNames = 'PostsTab' | 'CreatePostTab' | 'ProfileTab';
 
 const MainBottomTabNavigator = () => {
-    const [activeTab, setActiveTab] = useState<TabNames>("PostsTab")
+    const [activeTab, setActiveTab] = useState<TabNames>("PostsTab");
+    const dispatch = useDispatch();
+
+    const handlerLogout = () => logoutDB(dispatch)
 
     return (
         activeTab === 'CreatePostTab' ? (
@@ -124,14 +129,14 @@ const MainBottomTabNavigator = () => {
                 <Tab.Screen
                     name="PostsTab"
                     component={PostsScreen}
-                    options={({ navigation }) => ({
+                    options={{
                         headerTitle: 'Публікації',
                         headerRight: () => (
-                            <ButtonIcon onPress={() => navigation.navigate('Login')}>
+                            <ButtonIcon onPress={handlerLogout}>
                                 <LogoutIcon />
                             </ButtonIcon>
                         ),
-                    })}
+                    }}
                     listeners={{
                         focus: () => setActiveTab('PostsTab'),
                     }}
