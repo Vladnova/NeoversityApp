@@ -42,7 +42,15 @@
         "googleMaps": {
           "apiKey": "AIzaSyCfnl_muUTpAP0SugKQdRqxJOIMyaxUWgg"
         }
-      }
+      },
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.ACCESS_MEDIA_LOCATION"
+      ],
+      "package": "com.neoversityapp"
     },
     "web": {
       "favicon": "./assets/images/favicon.png"
@@ -65,6 +73,11 @@
           "isAccessMediaLocationEnabled": true
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "5c05f873-1434-46e9-8b9d-9d803e9b0a16"
+      }
+    }
   }
 }
